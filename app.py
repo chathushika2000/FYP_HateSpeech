@@ -108,4 +108,8 @@ def submitEnglish():
 	'demo2.html' , val = actual_val , prediction = text_val
 	)
 
-app.run(port=5000)
+
+# app.run(port=5000)
+
+if _name_ == "_main_":
+    app.run(debug = True)
