@@ -8,6 +8,7 @@ from keras_preprocessing.sequence import pad_sequences
 import joblib
 import pickle
 import os
+import demoji
 from tensorflow.keras.models import load_model
 from tensorflow.keras.optimizers import Adam
 import pandas as pd
@@ -55,6 +56,11 @@ def hatespeechview():
 		'demo-1.html'
 	)
 
+
+def get_emoji_meanings(text):
+    demoji.download_codes()  # download the latest emoji codes if necessary
+    return demoji.replace_with_desc(text)
+
 @app.route('/submit' , methods=['POST','GET']) 
 def submit():
 	tokenizer = Tokenizer(num_words=5000, lower=True)
@@ -64,11 +70,12 @@ def submit():
 	print(request.form)
 	# if request.form == "POST":
 	hatesppech = request.form['sentence']
-	text = [hatesppech]
+	emoji_text = get_emoji_meanings(hatesppech)
+	text = [emoji_text]
 	sequences = tokenizer.texts_to_sequences(text)
 	X_pred = pad_sequences(sequences, maxlen=200)
 	text_val = ""
-	print(hatesppech)
+	print(emoji_text)
 	# make predictions
 	y_pred = model.predict(X_pred)
 	print(y_pred)
